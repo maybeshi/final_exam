@@ -1,3 +1,6 @@
+<?php
+require_once "database.php";
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -12,8 +15,8 @@
 <main id="index">
 	<h2>商品データベースの処理</h2>
 	<ul>
-		<li><a href="list.html">商品一覧</a></li>
-		<li><a href="entry.html">商品登録</a></li>
+		<li><a href="list.php">商品一覧</a></li>
+		<li><a href="entry.php">商品登録</a></li>
 	</ul>
 </main>
 <footer>

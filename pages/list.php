@@ -1,3 +1,33 @@
+<?php
+require_once "database.php";
+require_once "Product.php";
+$products = [];
+$pstmt = null;
+try{
+$pdo = connectDB();
+$sql = "select * from product";
+$pstmt = $pdo->prepare($sql);
+$pstmt->execute();
+$records = $pstmt->fetchAll(PDO::FETCH_ASSOC);
+$product = null;
+foreach($records as $record){
+	$id = $record["id"];
+	$name = $record["name"];
+	$price = $record["price"];
+	$category = $record["category"];
+	$detail = $record["detail"];
+
+	$product = new Product($id, $name, $price, $category, $detail);
+	$products[] = $product;
+}
+}catch (PDOException $e){
+	echo $e->getMessage();
+	die;
+} finally {
+	unset($pstmt);
+	unset($pdo);
+}
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -19,110 +49,22 @@
 			<th>価格</th>
 			<th></th>
 		</tr>
+		<?php foreach ($products as $product) :?>
 		<tr>
-			<td>1</td>
-			<td>財布・小物入れ</td>
-			<td>和財布(女性用)</td>
-			<td>&yen;4100</td>
+			
+			<td><?= $product->getId() ?></td>
+			<td><?= $product->getCategory() ?></td>
+			<td><?= $product->getName() ?></td>
+			<td>&yen;<?= $product->getPrice() ?></td>
 			<td class="buttons">
 				<form name="inputs">
-					<input type="hidden" name="id" value="" />
-					<button formaction="update.html" formmethod="post" name="action" value="update">更新</button>
-					<button formaction="confirm.html" formmethod="post" name="action" value="delete">削除</button>
+					<input type="hidden" name="id" value="<?= $product->getId() ?>" />
+					<button formaction="update.php?id=<?= $product->getId() ?>" formmethod="post" name="action" value="update">更新</button>
+					<button formaction="confirm.php?id=<?= $product->getId() ?>" formmethod="post" name="action" value="delete">削除</button>
 				</form>
 			</td>
 		</tr>
-		<tr>
-			<td>2</td>
-			<td>財布・小物入れ</td>
-			<td>市松文様 小物入れ</td>
-			<td>&yen;2500</td>
-			<td class="buttons">
-				<form name="inputs">
-					<input type="hidden" name="id" value="" />
-					<button formaction="update.html" formmethod="post" name="action" value="update">更新</button>
-					<button formaction="confirm.html" formmethod="post" name="action" value="delete">削除</button>
-				</form>
-			</td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td>財布・小物入れ</td>
-			<td>籠</td>
-			<td>&yen;1900</td>
-			<td class="buttons">
-				<form name="inputs">
-					<input type="hidden" name="id" value="" />
-					<button formaction="update.html" formmethod="post" name="action" value="update">更新</button>
-					<button formaction="confirm.html" formmethod="post" name="action" value="delete">削除</button>
-				</form>
-			</td>
-		</tr>
-		<tr>
-			<td>4</td>
-			<td>食卓用</td>
-			<td>ランチョンマット</td>
-			<td>&yen;900</td>
-			<td class="buttons">
-				<form name="inputs">
-					<input type="hidden" name="id" value="" />
-					<button formaction="update.html" formmethod="post" name="action" value="update">更新</button>
-					<button formaction="confirm.html" formmethod="post" name="action" value="delete">削除</button>
-				</form>
-			</td>
-		</tr>
-		<tr>
-			<td>5</td>
-			<td>食卓用</td>
-			<td>お椀</td>
-			<td>&yen;900</td>
-			<td class="buttons">
-				<form name="inputs">
-					<input type="hidden" name="id" value="" />
-					<button formaction="update.html" formmethod="post" name="action" value="update">更新</button>
-					<button formaction="confirm.html" formmethod="post" name="action" value="delete">削除</button>
-				</form>
-			</td>
-		</tr>
-		<tr>
-			<td>6</td>
-			<td>食卓用</td>
-			<td>夫婦箸</td>
-			<td>&yen;1800</td>
-			<td class="buttons">
-				<form name="inputs">
-					<input type="hidden" name="id" value="" />
-					<button formaction="update.html" formmethod="post" name="action" value="update">更新</button>
-					<button formaction="confirm.html" formmethod="post" name="action" value="delete">削除</button>
-				</form>
-			</td>
-		</tr>
-		<tr>
-			<td>7</td>
-			<td>その他</td>
-			<td>扇子</td>
-			<td>&yen;820</td>
-			<td class="buttons">
-				<form name="inputs">
-					<input type="hidden" name="id" value="" />
-					<button formaction="update.html" formmethod="post" name="action" value="update">更新</button>
-					<button formaction="confirm.html" formmethod="post" name="action" value="delete">削除</button>
-				</form>
-			</td>
-		</tr>
-		<tr>
-			<td>8</td>
-			<td>その他</td>
-			<td>手染め 手ぬぐい</td>
-			<td>&yen;520</td>
-			<td class="buttons">
-				<form name="inputs">
-					<input type="hidden" name="id" value="" />
-					<button formaction="update.html" formmethod="post" name="action" value="update">更新</button>
-					<button formaction="confirm.html" formmethod="post" name="action" value="delete">削除</button>
-				</form>
-			</td>
-		</tr>
+		<?php endforeach; ?>
 	</table>
 </main>
 <footer>
